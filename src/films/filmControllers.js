@@ -42,56 +42,58 @@ exports.updateFilm = async (req, res) => {
                 { title: newtitle },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new title.`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new title.`,
+            });
         } else if (req.body.newactor) {
             let updatedFilm = await Film.findOneAndUpdate(
                 { title: title },
                 { actor: newactor },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new actor "${req.body.newactor}".`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new actor "${req.body.newactor}".`,
+            });
         } else if (req.body.newdirector) {
             let updatedFilm = await Film.findOneAndUpdate(
                 { title: title },
                 { director: newdirector },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new director "${updatedFilm.director}"`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new director "${updatedFilm.director}"`,
+            });
         } else if (req.body.newyear) {
             let updatedFilm = await Film.findOneAndUpdate(
                 { title: title },
                 { year: newyear },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new year of release "${updatedFilm.year}"`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new year of release "${updatedFilm.year}"`,
+            });
         } else if (req.body.newrating) {
             let updatedFilm = await Film.findOneAndUpdate(
                 { title: title },
                 { rating: newrating },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new rating "${updatedFilm.rating}"`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new rating "${updatedFilm.rating}"`,
+            });
         } else if (req.body.newsynopsis) {
             let updatedFilm = await Film.findOneAndUpdate(
                 { title: title },
                 { synopsis: newsynopsis },
                 { new: true }
             );
-            res.status(200).send(
-                `Film "${updatedFilm.title}" has been updated with new synopsis "${updatedFilm.synopsis}"`
-            );
+            res.status(200).send({
+                message: `Film "${updatedFilm.title}" has been updated with new synopsis "${updatedFilm.synopsis}"`,
+            });
         } else {
-            res.status(404).send("Sorry, couldn't find the film to update.");
+            res.status(404).send({
+                error: "Sorry, couldn't find the film to update.",
+            });
         }
     } catch (error) {
         console.log(error);
@@ -105,7 +107,9 @@ exports.deleteFilm = async (req, res) => {
         let deletedFilm = await Film.findOneAndDelete({
             title: req.body.title,
         });
-        res.status(200).send(`Film "${deletedFilm.title}" has been deleted.`);
+        res.status(200).send({
+            message: `Film "${deletedFilm.title}" has been deleted.`,
+        });
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: error.message });

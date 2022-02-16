@@ -31,29 +31,31 @@ exports.updateUser = async (req, res) => {
                 { password: req.body.newpassword },
                 { new: true }
             );
-            res.status(200).send(
-                `User ${updatedUser.username} updated with new password.`
-            );
+            res.status(200).send({
+                message: `User ${updatedUser.username} updated with new password.`,
+            });
         } else if (req.body.newemail) {
             let updatedUser = await User.findOneAndUpdate(
                 { username: req.body.username },
                 { email: req.body.newemail },
                 { new: true }
             );
-            res.status(200).send(
-                `User ${updatedUser.username} updated with new email address.`
-            );
+            res.status(200).send({
+                message: `User ${updatedUser.username} updated with new email address.`,
+            });
         } else if (req.body.newusername) {
             let updatedUser = await User.findOneAndUpdate(
                 { username: req.body.username },
                 { username: req.body.newusername },
                 { new: true }
             );
-            res.status(200).send(
-                `User ${updatedUser.username} updated with new username.`
-            );
+            res.status(200).send({
+                message: `User ${updatedUser.username} updated with new username.`,
+            });
         } else {
-            res.status(404).send("Cannot find the specified user to update.");
+            res.status(404).send({
+                error: "Cannot find the specified user to update.",
+            });
         }
     } catch (error) {
         console.log(error);
