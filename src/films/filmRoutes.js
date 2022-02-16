@@ -1,7 +1,7 @@
 const { Router } = require("express");
 const {
     addFilm,
-    listFilms,
+    findFilm,
     testRoute,
     updateFilm,
     deleteFilm,
@@ -11,7 +11,7 @@ const filmRouter = Router();
 //These are the HTTP verbs - POST, GET, etc
 
 filmRouter.post("/film", addFilm);
-filmRouter.get("/film", listFilms);
+filmRouter.get("/film", findFilm);
 filmRouter.put("/film", updateFilm);
 filmRouter.delete("/film", deleteFilm);
 
