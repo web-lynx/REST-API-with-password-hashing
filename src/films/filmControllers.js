@@ -1,5 +1,6 @@
 const Film = require("./filmModel");
 
+//Adds a film to the DB
 exports.addFilm = async (req, res) => {
     try {
         const newFilm = await Film.create(req.body);
@@ -10,6 +11,7 @@ exports.addFilm = async (req, res) => {
     }
 };
 
+//Lists all films in the DB
 exports.listFilms = async (req, res) => {
     try {
         const films = await Film.find({});
@@ -20,23 +22,31 @@ exports.listFilms = async (req, res) => {
     }
 };
 
+//Finds one film by its' title
 exports.findFilm = async (req, res) => {
     try {
-        const film = await Film.find({});
+        const film = await Film.findOne({ title: req.title });
+        res.status(200).send({ film });
+    } catch (error) {
+        console.log(error);
+        res.status(404).send({ error: "Cannot find the specified film." });
+    }
+};
+
+exports.updateFilm = async (req, res) => {
+    try {
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: error.message });
     }
 };
 
-exports.updateFilm = async (req, res) => {
-    try {
-    } catch (error) {}
-};
-
 exports.deleteFilm = async (req, res) => {
     try {
-    } catch (error) {}
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: error.message });
+    }
 };
 
 //Tester function
