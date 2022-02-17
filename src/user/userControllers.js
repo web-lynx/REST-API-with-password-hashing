@@ -1,4 +1,5 @@
 const User = require("./userModel");
+const bcrypt = require("bcryptjs");
 
 //Adds a user to the DB
 exports.addUser = async (req, res) => {
@@ -69,6 +70,29 @@ exports.deleteUser = async (req, res) => {
             username: req.body.username,
         });
         res.status(200).send(`User ${deletedUser.username} deleted.`);
+    } catch (error) {
+        console.log(error);
+        res.status(500).send({ error: error.message });
+    }
+};
+
+//Login function that compares bcrypt hashed pw with actual pw
+exports.checkPass = async (req, res) => {
+    try {
+        const user = await User.findOne({ username: req.body.username });
+        if (user) {
+            const validPassword = await bcrypt.compare(
+                req.body.password,
+                user.password
+            );
+            if (validPassword) {
+                res.status(200).send({ message: "Valid password" });
+            } else {
+                res.status(400).send({ error: "Invalid password." });
+            }
+        } else {
+            res.status(400).send({ error: "User not found." });
+        }
     } catch (error) {
         console.log(error);
         res.status(500).send({ error: error.message });
