@@ -1,10 +1,10 @@
 const { Router } = require("express");
 const {
-    addUser,
-    findUser,
-    updateUser,
-    deleteUser,
-    checkPass,
+  addUser,
+  findUser,
+  updateUser,
+  deleteUser,
+  checkPass,
 } = require("./userControllers");
 const { hashPass } = require("../middleware");
 const userRouter = Router();
