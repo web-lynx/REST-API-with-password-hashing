@@ -4,18 +4,19 @@ const {
   findUser,
   updateUser,
   deleteUser,
-  checkPass,
+  login,
 } = require("./userControllers");
-const { hashPass } = require("../middleware");
+const { hashPass, checkToken, decryptPass } = require("../middleware");
 const userRouter = Router();
 
 //User creation & manipulation - e.g. admin routes
 userRouter.post("/user", hashPass, addUser);
 userRouter.get("/user", findUser);
-userRouter.put("/user", updateUser);
-userRouter.delete("/user", deleteUser);
+userRouter.patch("/user", updateUser);
+userRouter.delete("/user/:filterKey/:filterVal", deleteUser);
 
 //User login routes
-userRouter.get("/login", checkPass);
+userRouter.post("/login", decryptPass, login);
+userRouter.get("/login", checkToken, login);
 
 module.exports = userRouter;

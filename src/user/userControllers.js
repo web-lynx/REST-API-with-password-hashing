@@ -1,11 +1,13 @@
 const User = require("./userModel");
 const bcrypt = require("bcryptjs");
+const jwt = require("jsonwebtoken");
 
-//Adds a user to the DB
+//Adds a user to the DB - now with JWT tokens created during the process
 exports.addUser = async (req, res) => {
   try {
     const newUser = await User.create(req.body);
-    res.status(200).send({ user: newUser });
+    const token = await jwt.sign({ _id: newUser._id }, process.env.SECRET);
+    res.status(200).send({ user: newUser.username, token });
   } catch (error) {
     console.log(error);
     res.status(500).send({ err: error.message });
@@ -67,34 +69,49 @@ exports.updateUser = async (req, res) => {
 exports.deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.findOneAndDelete({
-      username: req.body.username,
+      [req.params.filterKey]: req.params.filterVal,
     });
-    res.status(200).send(`User ${deletedUser.username} deleted.`);
-  } catch (error) {
-    console.log(error);
-    res.status(500).send({ error: error.message });
-  }
-};
-
-//Login function that compares bcrypt hashed pw with actual pw
-exports.checkPass = async (req, res) => {
-  try {
-    const user = await User.findOne({ username: req.body.username });
-    if (user) {
-      const validPassword = await bcrypt.compare(
-        req.body.password,
-        user.password
-      );
-      if (validPassword) {
-        res.status(200).send({ message: "Valid password" });
-      } else {
-        res.status(400).send({ error: "Invalid password." });
-      }
+    if (deletedUser.deletedCount > 0) {
+      res.status(200).send(`User ${deletedUser.username} deleted.`);
     } else {
-      res.status(400).send({ error: "User not found." });
+      throw new Error("Did not remove user");
     }
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: error.message });
   }
 };
+
+exports.login = async (req, res) => {
+  try {
+    const token = await jwt.sign({ _id: req.user.id });
+    res.status(200).send({ user: req.user.username, token });
+  } catch (error) {
+    console.log(error);
+    res.status(500).send({ err: error.message });
+  }
+};
+
+//// Deprecated - "all in one func"
+// //Login function that compares bcrypt hashed pw with actual pw
+// exports.checkPass = async (req, res) => {
+//   try {
+//     const user = await User.findOne({ username: req.body.username });
+//     if (user) {
+//       const validPassword = await bcrypt.compare(
+//         req.body.password,
+//         user.password
+//       );
+//       if (validPassword) {
+//         res.status(200).send({ message: "Valid password" });
+//       } else {
+//         res.status(400).send({ error: "Invalid password." });
+//       }
+//     } else {
+//       res.status(400).send({ error: "User not found." });
+//     }
+//   } catch (error) {
+//     console.log(error);
+//     res.status(500).send({ error: error.message });
+//   }
+// };
