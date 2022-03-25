@@ -15,8 +15,8 @@ exports.hashPass = async (req, res, next) => {
 //New password-decrypting middleware
 exports.decryptPass = async (req, res, next) => {
   try {
-    const user = await User.findOne({ username: req.body.username });
-    if (await bcrypt.compare(req.body.password, user.password)) {
+    req.user = await User.findOne({ username: req.body.username });
+    if (await bcrypt.compare(req.body.password, req.user.password)) {
       next();
     } else {
       throw new Error("Incorrect credentials");
@@ -30,13 +30,15 @@ exports.decryptPass = async (req, res, next) => {
 //JWT-based persistent login token checker
 exports.checkToken = async (req, res, next) => {
   try {
-    const token = req.header("Authorization").replace("Bearer ", "");
-    const decodedToken = await jwt.verify(token, process.env.SECRET);
-    req.user = await User.findById(decodedToken._id);
+    const decodedToken = await jwt.verify(
+      req.header("Authorization").replace("Bearer ", ""),
+      process.env.SECRET
+    );
+    req.user = await User.findOne({ _id: decodedToken._id });
     if (req.user) {
       next();
     } else {
-      throw new Error("No user found");
+      throw new Error("Invalid token");
     }
     console.log(User);
     console.log(decodedToken);

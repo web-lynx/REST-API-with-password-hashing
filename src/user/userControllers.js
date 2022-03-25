@@ -1,5 +1,4 @@
 const User = require("./userModel");
-const bcrypt = require("bcryptjs");
 const jwt = require("jsonwebtoken");
 
 //Adds a user to the DB - now with JWT tokens created during the process
@@ -84,7 +83,7 @@ exports.deleteUser = async (req, res) => {
 
 exports.login = async (req, res) => {
   try {
-    const token = await jwt.sign({ _id: req.user.id });
+    const token = await jwt.sign({ _id: req.user.id }, process.env.SECRET);
     res.status(200).send({ user: req.user.username, token });
   } catch (error) {
     console.log(error);
