@@ -1,17 +1,11 @@
 const { Router } = require("express");
-const {
-  addUser,
-  findUser,
-  updateUser,
-  deleteUser,
-  login,
-} = require("./userControllers");
+const { addUser, updateUser, deleteUser, login } = require("./userControllers");
 const { hashPass, checkToken, decryptPass } = require("../middleware");
 const userRouter = Router();
 
 //User creation & manipulation - e.g. admin routes
 userRouter.post("/user", hashPass, addUser);
-userRouter.patch("/user", checkToken, decryptPass, updateUser);
+userRouter.patch("/user", checkToken, hashPass, updateUser);
 userRouter.delete("/user/:filterKey/:filterVal", deleteUser);
 
 //User login routes

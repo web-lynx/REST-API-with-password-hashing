@@ -27,38 +27,13 @@ exports.findUser = async (req, res) => {
 //Finds one user by their username, then updates
 exports.updateUser = async (req, res) => {
   try {
-    if (req.body.newpassword) {
-      let updatedUser = await User.findOneAndUpdate(
-        { username: req.body.username },
-        { password: req.body.newpassword },
-        { new: true }
-      );
-      res.status(200).send({
-        message: `User ${updatedUser.username} updated with new password.`,
-      });
-    } else if (req.body.newemail) {
-      let updatedUser = await User.findOneAndUpdate(
-        { username: req.body.username },
-        { email: req.body.newemail },
-        { new: true }
-      );
-      res.status(200).send({
-        message: `User ${updatedUser.username} updated with new email address.`,
-      });
-    } else if (req.body.newusername) {
-      let updatedUser = await User.findOneAndUpdate(
-        { username: req.body.username },
-        { username: req.body.newusername },
-        { new: true }
-      );
-      res.status(200).send({
-        message: `User ${updatedUser.username} updated with new username.`,
-      });
-    } else {
-      res.status(404).send({
-        error: "Cannot find the specified user to update.",
-      });
-    }
+    let updatedUser = await User.updateOne(
+      { _id: req.user._id },
+      { password: req.body.password }
+    );
+    res.status(200).send({
+      message: `User ${updatedUser.username} updated with new password.`,
+    });
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: error.message });
@@ -68,7 +43,7 @@ exports.updateUser = async (req, res) => {
 //Deletes one user by filter values from the endpoint
 exports.deleteUser = async (req, res) => {
   try {
-    const deletedUser = await User.findOneAndDelete({
+    const deletedUser = await User.deleteOne({
       [req.params.filterKey]: req.params.filterVal,
     });
     if (deletedUser.deletedCount > 0) {

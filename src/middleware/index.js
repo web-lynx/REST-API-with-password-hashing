@@ -4,7 +4,14 @@ const jwt = require("jsonwebtoken");
 
 exports.hashPass = async (req, res, next) => {
   try {
-    req.body.password = await bcrypt.hash(req.body.password, 8);
+    if (req.body.newpassword) {
+      req.body.password = await bcrypt.hash(req.body.newpassword, 8);
+    } else if (req.body.password) {
+      req.body.password = await bcrypt.hash(req.body.password, 8);
+    } else {
+      throw new error();
+    }
+    console.log(req.body);
     next();
   } catch (error) {
     console.log(error);
@@ -34,14 +41,13 @@ exports.checkToken = async (req, res, next) => {
       req.header("Authorization").replace("Bearer ", ""),
       process.env.SECRET
     );
-    req.user = await User.findOne({ _id: decodedToken._id });
+    req.user = await User.findById(decodedToken._id);
+    console.log(req.body, req.user);
     if (req.user) {
       next();
     } else {
       throw new Error("Invalid token");
     }
-    console.log(User);
-    console.log(decodedToken);
   } catch (error) {
     console.log(error);
     res.status(500).send({ error: error.message });
