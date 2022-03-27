@@ -65,6 +65,7 @@ exports.updateUser = async (req, res) => {
   }
 };
 
+//Deletes one user by filter values from the endpoint
 exports.deleteUser = async (req, res) => {
   try {
     const deletedUser = await User.findOneAndDelete({
@@ -81,6 +82,7 @@ exports.deleteUser = async (req, res) => {
   }
 };
 
+//Login function
 exports.login = async (req, res) => {
   try {
     const token = await jwt.sign({ _id: req.user.id }, process.env.SECRET);

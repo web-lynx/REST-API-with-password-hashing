@@ -11,8 +11,7 @@ const userRouter = Router();
 
 //User creation & manipulation - e.g. admin routes
 userRouter.post("/user", hashPass, addUser);
-userRouter.get("/user", findUser);
-userRouter.patch("/user", updateUser);
+userRouter.patch("/user", checkToken, decryptPass, updateUser);
 userRouter.delete("/user/:filterKey/:filterVal", deleteUser);
 
 //User login routes
